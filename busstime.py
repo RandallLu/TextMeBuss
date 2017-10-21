@@ -33,11 +33,20 @@ def get_next_arrivals(route_id, stop_id):
 	
 	# time format '00:00:00'
 	for time in arrival_times:
-		arrival = datetime.datetime.time(datetime.datetime.strptime(time, "%H:%M:%S"))
-		current = datetime.datetime.time(datetime.datetime.today())
+		date = datetime.datetime.today().date().strftime("%Y/%m/%d ")
+		arrival = datetime.datetime.strptime(date + time, "%Y/%m/%d %H:%M:%S")
+		current = datetime.datetime.today()
+
 		if arrival > current and len(ret_times) == 0:
-			ret_times['first'] = arrival.strftime("%H:%M:%S")
+			# convert to datetime object
+			estimate = datetime.datetime.min + (arrival - current)
+			# strftime only works for datetimes with year >= 1900
+			estimate = estimate.replace(year=1900)
+			ret_times['first'] = estimate.strftime("%M")
 		elif arrival > current and len(ret_times) == 1:
-			ret_times['second'] = arrival.strftime("%H:%M:%S")
+			estimate = datetime.datetime.min + (arrival - current)
+			estimate = estimate.replace(year=1900)
+			ret_times['second'] = estimate.strftime("%M")
+	
 	ret_times = json.dumps(ret_times)
 	return json.loads(ret_times)
