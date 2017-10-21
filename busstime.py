@@ -1,5 +1,6 @@
 import datetime
 import json
+import pytz
 
 def get_trips(route_id):
 	# dictionary with trip_ids as key and service_ids as values
@@ -30,12 +31,15 @@ def get_schedule(trip_info, stop_id):
 def get_next_arrivals(route_id, stop_id):
 	arrival_times = get_schedule(get_trips(route_id), stop_id)
 	ret_times = {}
-	
+
 	# time format '00:00:00'
 	for time in arrival_times:
-		date = datetime.datetime.today().date().strftime("%Y/%m/%d ")
+		tz = pytz.timezone("America/Los_Angeles")
+		date = datetime.datetime.now(tz).strftime("%Y/%m/%d ")
 		arrival = datetime.datetime.strptime(date + time, "%Y/%m/%d %H:%M:%S")
-		current = datetime.datetime.today()
+		current = datetime.datetime.now(tz)
+
+		arrival = arrival.replace(tzinfo=tz)
 
 		if arrival > current and len(ret_times) == 0:
 			# convert to datetime object
@@ -47,6 +51,8 @@ def get_next_arrivals(route_id, stop_id):
 			estimate = datetime.datetime.min + (arrival - current)
 			estimate = estimate.replace(year=1900)
 			ret_times['second'] = estimate.strftime("%M")
-	
+
 	ret_times = json.dumps(ret_times)
 	return json.loads(ret_times)
+
+print get_next_arrivals("201","95031")
