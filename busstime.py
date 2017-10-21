@@ -38,8 +38,7 @@ def get_next_arrivals(route_id, stop_id):
 		date = datetime.datetime.now(tz).strftime("%Y/%m/%d ")
 		arrival = datetime.datetime.strptime(date + time, "%Y/%m/%d %H:%M:%S")
 		current = datetime.datetime.now(tz)
-
-		arrival = arrival.replace(tzinfo=tz)
+		current = current.replace(tzinfo=None)
 
 		if arrival > current and len(ret_times) == 0:
 			# convert to datetime object
@@ -54,5 +53,3 @@ def get_next_arrivals(route_id, stop_id):
 
 	ret_times = json.dumps(ret_times)
 	return json.loads(ret_times)
-
-print get_next_arrivals("201","95031")
