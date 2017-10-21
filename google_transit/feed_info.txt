@@ -1,0 +1,2 @@
+﻿feed_publisher_name,feed_publisher_url,feed_lang,version_id,feed_version
+MTS,http://www.sdmts.com,EN,20170926,v4 - Oktoberfest and SDSU v Illinois scheds
