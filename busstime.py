@@ -2,6 +2,30 @@ import datetime
 import json
 import pytz
 
+def get_stop_ids(trip_info, route_id):
+	stop_ids = []
+	# get all differnt stop_ids for a certain route_id
+	with open("google_transit/stop_times.txt") as f:
+		for line in f:
+			parts = line.split(',')
+			if (parts[0] in trip_info) and parts[3] not in stop_ids:
+				stop_ids.append(parts[3])
+	return stop_ids
+
+def populate_stop_ids_with_names(stop_ids):
+	stop_name = {}
+	count = 1;
+	# populate stop ids with the name to ease the part of prompting user for input
+	with open("google_transit/stops.txt") as f:
+		for line in f:
+			parts = line.split(',')
+			if parts[0] in stop_ids:
+				for s_id in stop_ids:
+					if s_id == parts[0]:
+				 		stop_name[str(count)] = s_id+"_"+parts[1]
+						count += 1
+	return stop_name
+
 def get_trips(route_id):
 	# dictionary with trip_ids as key and service_ids as values
 	# service_ids indicate days of the week the bus operates
@@ -18,13 +42,14 @@ def get_schedule(trip_info, stop_id):
 
 	# stop_times.txt has trip_id, arrival_time, departure_time(not used), stop_id, ...
 	with open('google_transit/stop_times.txt') as f:
+		tz = pytz.timezone("America/Los_Angeles")
 		for line in f:
 			parts = line.split(',')
 			if (parts[0] in trip_info) and (parts[3] == stop_id):
 				# service_parts[1] has format 0000000 with 0 indicating not operating and 1 otherwise
 				service_parts = trip_info[parts[0]].split('-')
 				running_days = service_parts[1]
-				if running_days[datetime.datetime.today().weekday()] == '1':
+				if running_days[datetime.datetime.now(tz).weekday()] == '1':
 					arrival_times.append(parts[1])
 	return sorted(arrival_times)
 
