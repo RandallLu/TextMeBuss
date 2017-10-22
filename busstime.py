@@ -14,7 +14,6 @@ def get_stop_ids(route_id):
 	return stop_ids
 
 def populate_names(stop_ids):
-	print stop_ids
 	stop_name = {}
 	count = 1;
 	# populate stop ids with the name to ease the part of prompting user for input
@@ -80,6 +79,8 @@ def get_next_arrivals(route_id, stop_id):
 		if arrival > current and len(ret_times) == 0:
 			# convert to datetime object
 			estimate = datetime.datetime.min + (arrival - current)
+			if estimate.hour > 0:
+				break
 			# strftime only works for datetimes with year >= 1900
 			estimate = estimate.replace(year=1900)
 			ret_times['first'] = estimate.strftime("%M")
