@@ -2,7 +2,8 @@ import datetime
 import json
 import pytz
 
-def get_stop_ids(trip_info, route_id):
+def get_stop_ids(route_id):
+	trip_info = get_trips(route_id)
 	stop_ids = []
 	# get all differnt stop_ids for a certain route_id
 	with open("google_transit/stop_times.txt") as f:
@@ -22,7 +23,7 @@ def populate_stop_ids_with_names(stop_ids):
 			if parts[0] in stop_ids:
 				for s_id in stop_ids:
 					if s_id == parts[0]:
-				 		stop_name[str(count)] = s_id+"_"+parts[1]
+				 		stop_name[str(count)] = s_id+"-"+parts[1]
 						count += 1
 	return stop_name
 
