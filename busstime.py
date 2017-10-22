@@ -6,14 +6,17 @@ def get_stop_ids(route_id):
 	trip_info = get_trips(route_id)
 	stop_ids = []
 	# get all differnt stop_ids for a certain route_id
-	with open("google_transit/stop_times.txt") as f:
-		for line in f:
-			parts = line.split(',')
-			if (parts[0] in trip_info) and parts[3] not in stop_ids:
-				stop_ids.append(parts[3])
+	for trip_id in trip_info:
+		print trip_id
+		with open("google_transit/stop_times.txt") as f:
+			for line in f:
+				parts = line.split(',')
+				if (parts[0] == trip_id) and parts[3] not in stop_ids:
+					stop_ids.append(parts[3])
+		break
 	return stop_ids
 
-def populate_stop_ids_with_names(stop_ids):
+def populate_names(stop_ids):
 	stop_name = {}
 	count = 1;
 	# populate stop ids with the name to ease the part of prompting user for input
@@ -21,10 +24,7 @@ def populate_stop_ids_with_names(stop_ids):
 		for line in f:
 			parts = line.split(',')
 			if parts[0] in stop_ids:
-				for s_id in stop_ids:
-					if s_id == parts[0]:
-				 		stop_name[str(count)] = s_id+"-"+parts[1]
-						count += 1
+				 stop_name[str(stop_ids.index(parts[0]))] = parts[0]+"-"+parts[1]
 	return stop_name
 
 def get_trips(route_id):
