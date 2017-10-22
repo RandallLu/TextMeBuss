@@ -6,17 +6,15 @@ def get_stop_ids(route_id):
 	trip_info = get_trips(route_id)
 	stop_ids = []
 	# get all differnt stop_ids for a certain route_id
-	for trip_id in trip_info:
-		print trip_id
-		with open("google_transit/stop_times.txt") as f:
-			for line in f:
-				parts = line.split(',')
-				if (parts[0] == trip_id) and parts[3] not in stop_ids:
-					stop_ids.append(parts[3])
-		break
+	with open("google_transit/stop_times.txt") as f:
+		for line in f:
+			parts = line.split(',')
+			if (parts[0] in trip_info) and (parts[3] not in stop_ids):
+				stop_ids.append(parts[3])
 	return stop_ids
 
 def populate_names(stop_ids):
+	print stop_ids
 	stop_name = {}
 	count = 1;
 	# populate stop ids with the name to ease the part of prompting user for input
@@ -27,15 +25,28 @@ def populate_names(stop_ids):
 				 stop_name[str(stop_ids.index(parts[0]))] = parts[0]+"-"+parts[1]
 	return stop_name
 
+def get_stop_list(route_id):
+	return populate_names(get_stop_ids(route_id))
+
 def get_trips(route_id):
+	direction = {
+		'n': "North",
+		'e': "East",
+		'w': "West",
+		's': "South"
+	}
 	# dictionary with trip_ids as key and service_ids as values
 	# service_ids indicate days of the week the bus operates
 	trip_info = {}
 	with open('google_transit/trips.txt') as f:
 		for line in f:
 			parts = line.split(',')
-			if parts[0] == route_id:
-				trip_info[parts[2]] = parts[1]
+			if (route_id[-1].isalpha()):
+				if (parts[0] == route_id[:-1]) and (parts[5] == direction[route_id[-1]]):
+					trip_info[parts[2]] = parts[1]
+			else:
+				if (parts[0] == route_id):
+					trip_info[parts[2]] = parts[1]
 	return trip_info
 
 def get_schedule(trip_info, stop_id):
