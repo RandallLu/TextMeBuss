@@ -33,8 +33,8 @@ def get_trips(route_id):
 	trip_info = {}
 	with open('google_transit/trips.txt') as f:
 		for line in f:
-			if line[:3] == route_id:
-				parts = line.split(',')
+			parts = line.split(',')
+			if parts[0] == route_id:
 				trip_info[parts[2]] = parts[1]
 	return trip_info
 
