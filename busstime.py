@@ -87,7 +87,8 @@ def get_next_arrivals(route_id, stop_id):
 		elif arrival > current and len(ret_times) == 1:
 			estimate = datetime.datetime.min + (arrival - current)
 			estimate = estimate.replace(year=1900)
-			ret_times['second'] = estimate.strftime("%M")
+			if estimate.strftime("%M") > ret_times['first']
+				ret_times['second'] = estimate.strftime("%M")
 
 	ret_times = json.dumps(ret_times)
 	return json.loads(ret_times)
